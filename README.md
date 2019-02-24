@@ -1,12 +1,15 @@
-**Beartooth Coding Sample: Manchester Coder**
+#**Beartooth Coding Sample: Manchester Coder**
 
 This is a Manchester Parser that takes an input text file and encodes or decodes using Manchester code.
 
-**encodeInput.txt** contains the information to be encoded
+**encodeInput.txt** 
+	Contains the information to be encoded
 
-**encodeOutput.txt** contains the encoded information in Manchester format
+**encodeOutput.txt** 
+	Contains the encoded information in Manchester format
 
-**decodeOutput.txt** contains the decoded data from encodeOutput.txt
+**decodeOutput.txt** 
+	Contains the decoded data from encodeOutput.txt
 
 **To run:**
 
