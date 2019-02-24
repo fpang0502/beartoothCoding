@@ -5,26 +5,33 @@
 
 using namespace std;
 
+// Constructor
 Manchester::Manchester(){
 	this->errorMessage = "There is nothing wrong!\n";
 	this->success=true;
 }
 
+// Destructor
 Manchester::~Manchester()
 {
 
 }
 
+// Get the message and print it
 void Manchester::getMessage(){
 	cout << this->errorMessage << endl;
 }
 
+// parse the input file and write an output
+// takes in -d for decoding
+// takes in -e for encoding
 bool Manchester::parse(std::string mode, std::string inputfile, std::string outputfile){
-	// take in 3 arguments -d/-e inputfile outputfile
+	// open in the input and output files
 	ifstream ifile;
 	ifile.open(inputfile);
 	ofstream ofile;
 	ofile.open(outputfile);
+	// throw error messages if failed
 	if(ifile.fail()) {
 		this->success = false;
 		this->errorMessage = "Could not open inputfile.\n";
@@ -44,45 +51,58 @@ bool Manchester::parse(std::string mode, std::string inputfile, std::string outp
 			this->decode(ifile, ofile);
 			if(this->success) return true;
 		}
+		// invalid parameter
 		else {
 			this->success = false;
 			this->errorMessage = "Invalid parameter. Expected -e for encoding or -d for decoding.\n";
 		}
 	}
+	// print the message
 	this->getMessage();
 	return false;
 }
 
-
+// encoding with input and output streams
 void Manchester::encode(ifstream& ifile, ofstream& ofile){
 	string line;
+	// get each line
 	while(getline(ifile, line)){
 		stringstream ss(line +"\n");
 		char c;
+		// include whitespace to be parsed to manchester
 		ss >> noskipws;
 		while(ss>>c){
+			// convert each character to binary string
 			string binary = bitset<8>(c).to_string();
+			// convert each binary string to manchester string
 			string manchester = binaryToManchester(binary);
+			// if it fails, return
 			if(!this->success){
 				ifile.close();
 				ofile.close();
 				return;
 			}
+			// write to the file
 			ofile << manchester;
 		}
 	}
+	// success
 	ifile.close();
 	ofile.close();
 	this->success = true;
 	this->errorMessage = "Finished encoding!\n"; 
 }
 
+// decode with input and output streams
 void Manchester::decode(ifstream& ifile, ofstream& ofile){
 	string line;
+	// decode each line
 	while(getline(ifile, line)){
 		stringstream ss(line);
+		// take in 16 bits at a time for each character
 		for(unsigned int i=0; i<line.size(); i+=16){
 			string binary;
+			// convert each 16 bits to binary
 			for(unsigned int j=i; j<i+16; j+=2){
 				binary += this->manchesterToBinary(line[j], line[j+1]);
 				if(!this->success){
@@ -91,16 +111,21 @@ void Manchester::decode(ifstream& ifile, ofstream& ofile){
 					return;
 				}
 			}
+			// convert each binary to character
 			char letter = bitset<8>(binary).to_ulong();
+			// write to output
 			ofile << letter;
 		}
 	}
+	// success
 	ifile.close();
 	ofile.close();
 	this->success = true;
 	this->errorMessage = "Finished decoding!\n"; 
 }
 
+// convert 8 bit binary to 16 bit manchester
+// uses IEEE standard
 string Manchester::binaryToManchester(string s){
 	string manchester;
 	for(unsigned int i=0; i<8; i++){
@@ -118,6 +143,7 @@ string Manchester::binaryToManchester(string s){
 	return manchester;
 }
 
+// Converts a single manchester pair into its binary counterpart
 string Manchester::manchesterToBinary(char b1, char b2){
 	string manchester;
 	manchester += b1;

@@ -12,9 +12,11 @@ int main(int argc, char* argv[]){
 	string mode = argv[1];
 	string inputfile = argv[2];
 	string outputfile = argv[3];
-	//encode
+	//instantiate a Manchester parser
 	Manchester myParser;
+	// parse with the mode, input and output given
 	myParser.parse(mode, inputfile, outputfile);
+	// print the message after parsing
 	myParser.getMessage();
 	return 0;
 }
