@@ -1,0 +1,1 @@
+This is a Manchester Parser that takes an input text file and encodes or decodes using Manchester code.
